@@ -28,8 +28,6 @@ jobs:
           host: ${{ secrets.DROPLET_HOST }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_PRIVATE_KEY   }}
-          source: .next/
-          target: /var/www/html
           script: |
 
             cd /var/www/testing-pipelines
