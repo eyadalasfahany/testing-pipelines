@@ -1,0 +1,48 @@
+name: Deploy Next.js App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Install PM2
+        run: npm install pm2 -g
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v0.3.0
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          key: ${{ secrets.DROPLET_PRIVATE_KEY   }}
+          source: .next/
+          target: /var/www/html
+          script: |
+
+            cd /var/www/testing-pipelines
+
+            git pull origin main
+
+            # Install production dependencies
+            npm install --production
+
+            if ! pm2 list | grep -q "testing-pipelines"; then
+              
+              pm2 start npm --name "testing-pipelines" -- start -- -p 3034
+            else
+              
+              pm2 restart "testing-pipelines"
+            fi
