@@ -23,7 +23,7 @@ jobs:
         run: npm install pm2 -g
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@v0.3.0
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DROPLET_HOST }}
           username: ${{ secrets.DROPLET_USERNAME }}
